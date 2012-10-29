@@ -87,7 +87,7 @@ module Librato
         params = {:names => metric_names }
         connection.delete do |request|
           request.url connection.build_url("metrics")
-          request.body = MultiJson.dump(params)
+          request.body = MultiJson.encode(params)
         end
         # expects 204, middleware will raise exception
         # otherwise.
@@ -137,7 +137,7 @@ module Librato
         # expects 200
         url = connection.build_url("metrics/#{metric}", query)
         response = connection.get(url)
-        parsed = MultiJson.load(response.body)
+        parsed = MultiJson.decode(response.body)
         # TODO: pagination support
         query.empty? ? parsed : parsed["measurements"]
       end
@@ -216,7 +216,7 @@ module Librato
       def update(metric, options = {})
         connection.put do |request|
           request.url connection.build_url("metrics/#{metric}")
-          request.body = MultiJson.dump(options)
+          request.body = MultiJson.encode(options)
         end
       end
 
